@@ -1,43 +1,42 @@
 import streamlit as st
-from streamlit_drawable_canvas import st_canvas
 import random
+import time
 
-st.title("2D Racing Game - Canvas Simulation")
-
-# Set up canvas
-canvas_result = st_canvas(
-    fill_color="white",
-    stroke_width=2,
-    stroke_color="black",
-    background_color="#DDD",
-    width=500,
-    height=700,
-    drawing_mode="none",
-    key="canvas",
-)
+st.title("2D Racing Game - Simplified Simulation")
 
 # Game Variables
-car_x, car_y = 225, 600  # Car starting position
-obstacle_x = random.randint(0, 450)  # Random obstacle position
+car_x, car_y = 5, 10  # Car starting position in a grid format
+grid_width = 10
+obstacle_x = random.randint(0, grid_width)
 obstacle_y = 0
-obstacle_speed = 5
+score = 0
 
-# Display car and obstacle
-st.write("🚗 Car Position:", car_x, car_y)
-st.write("🚧 Obstacle Position:", obstacle_x, obstacle_y)
+# Game Loop
+while True:
+    # Display game state
+    st.write(f"Score: {score}")
+    st.write("🚗 Car Position:", (car_x, car_y))
+    st.write("🚧 Obstacle Position:", (obstacle_x, obstacle_y))
 
-# Game loop
-if st.button("Move Left"):
-    car_x -= 10
-if st.button("Move Right"):
-    car_x += 10
+    # Move car
+    move = st.radio("Move Car", ["Left", "Right"], index=1)
+    if move == "Left" and car_x > 0:
+        car_x -= 1
+    elif move == "Right" and car_x < grid_width:
+        car_x += 1
 
-# Move obstacle
-obstacle_y += obstacle_speed
-if obstacle_y > 700:
-    obstacle_y = 0
-    obstacle_x = random.randint(0, 450)
+    # Move obstacle down
+    obstacle_y += 1
+    if obstacle_y > 10:  # Reset obstacle when it goes off screen
+        obstacle_y = 0
+        obstacle_x = random.randint(0, grid_width)
+        score += 1
 
-# Detect collision
-if abs(car_x - obstacle_x) < 50 and abs(car_y - obstacle_y) < 50:
-    st.write("Collision Detected! Game Over.")
+    # Check collision
+    if car_x == obstacle_x and car_y == obstacle_y:
+        st.write("💥 Collision Detected! Game Over.")
+        break
+
+    # Refresh the state
+    time.sleep(0.5)
+    st.experimental_rerun()
