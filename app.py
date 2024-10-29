@@ -4,15 +4,20 @@ import random
 st.title("2D Racing Game - Simplified Simulation")
 
 # Initialize game variables in session state
-if "initialized" not in st.session_state:
+if "car_x" not in st.session_state:
     st.session_state.car_x = 5
+if "car_y" not in st.session_state:
     st.session_state.car_y = 10
+if "grid_width" not in st.session_state:
     st.session_state.grid_width = 10
+if "obstacle_x" not in st.session_state:
     st.session_state.obstacle_x = random.randint(0, st.session_state.grid_width)
+if "obstacle_y" not in st.session_state:
     st.session_state.obstacle_y = 0
+if "score" not in st.session_state:
     st.session_state.score = 0
+if "game_over" not in st.session_state:
     st.session_state.game_over = False
-    st.session_state.initialized = True  # Flag to indicate initialization
 
 # Display game state
 st.write(f"Score: {st.session_state.score}")
@@ -39,8 +44,9 @@ if not st.session_state.game_over:
         and st.session_state.car_y == st.session_state.obstacle_y
     ):
         st.session_state.game_over = True
-        st.write("💥 Collision Detected! Game Over.")
-    else:
-        st.write("Keep going!")  # Only shows when the game is still on
-else:
+
+# Display game over message if game is over
+if st.session_state.game_over:
     st.write("💥 Collision Detected! Game Over.")
+else:
+    st.write("Keep going!")  # Only shows when the game is still on
